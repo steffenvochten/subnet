@@ -9,8 +9,62 @@ if (!window._flutter) {
 _flutter.buildConfig = {"engineRevision":"e672b006cb34c921db85b8e2f482ed3144a4574b","builds":[{"compileTarget":"dart2js","renderer":"canvaskit","mainJsPath":"main.dart.js"}]};
 
 
+const loading = document.createElement('div');
+
+// Spinner element
+const spinner = document.createElement('div');
+spinner.style.border = '4px solid rgba(255, 255, 255, 0.3)';
+spinner.style.borderTop = '4px solid white';
+spinner.style.borderRadius = '50%';
+spinner.style.width = '40px';
+spinner.style.height = '40px';
+spinner.style.animation = 'spin 1s linear infinite';
+
+// Loading container styles
+loading.style.position = 'fixed';
+loading.style.top = '50%';
+loading.style.left = '50%';
+loading.style.transform = 'translate(-50%, -50%)';
+loading.style.fontSize = '2em';
+loading.style.fontWeight = 'bold';
+loading.style.color = 'white';
+loading.style.backgroundColor = '#FFBF00';
+loading.style.padding = '1em';
+loading.style.borderRadius = '0.5em';
+loading.style.zIndex = '1000';
+loading.style.boxShadow = '0 0 1em rgba(0, 0, 0, 0.5)';
+loading.style.display = 'flex';
+loading.style.flexDirection = 'column';
+loading.style.alignItems = 'center';
+loading.style.justifyContent = 'center';
+loading.style.fontFamily = 'sans-serif';
+
+// Adding spinner and loading text
+loading.appendChild(spinner);
+const loadingText = document.createElement('div');
+loadingText.textContent = "Loading app...";
+loading.appendChild(loadingText);
+
+// Append to body
+document.body.appendChild(loading);
+
+// Spinner animation CSS
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}`;
+document.head.appendChild(style);
+
 _flutter.loader.load({
-  serviceWorkerSettings: {
-    serviceWorkerVersion: "2884684794"
-  }
+    onEntrypointLoaded: async function(engineInitializer) {
+        loadingText.textContent = "Loading app...";
+        const appRunner = await engineInitializer.initializeEngine();
+
+        loadingText.textContent = "Loading app...";
+        appRunner.runApp();
+
+        loading.remove();
+    }
 });
